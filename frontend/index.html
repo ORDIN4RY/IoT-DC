@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Data Center Environment Monitor</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <aside>
+    <div class="brand">
+      <div class="brand-title">DC Thermal</div>
+      <div class="brand-sub">WEMOS_ESP32</div>
+    </div>
+    <nav id="nav">
+      <a href="#dash" class="active">Dashboard</a>
+      <a href="#hist">Riwayat</a>
+      <a href="#set">Pengaturan</a>
+    </nav>
+  </aside>
+
+  <main>
+    <div class="container">
+      <header>
+        <div>
+          <h1 id="page-heading">Dashboard</h1>
+          <div id="upd" class="timestamp">Menghubungkan...</div>
+        </div>
+        <div id="conn-pill" class="badge b-off">Offline</div>
+      </header>
+
+      <!-- TAB 1: DASHBOARD -->
+      <section id="dash" class="page active">
+        <!-- 3 KPI Cards -->
+        <div class="grid grid-3">
+          <!-- Card 1: Intake -->
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">Intake Depan</span>
+              <span class="badge b-cold">Cold Aisle</span>
+            </div>
+            <div class="val-wrap">
+              <span class="val" id="intake-avg">--</span>
+              <span class="unit">°C avg</span>
+            </div>
+            <div class="sub-row">
+              <div>Kiri (FL): <strong id="m-tfl">--</strong>°C (<span id="m-hfl">--</span>%)</div>
+              <div>Kanan (FR): <strong id="m-tfr">--</strong>°C (<span id="m-hfr">--</span>%)</div>
+            </div>
+          </div>
+
+          <!-- Card 2: Exhaust -->
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">Exhaust Belakang</span>
+              <span class="badge b-hot">Hot Aisle</span>
+            </div>
+            <div class="val-wrap">
+              <span class="val" id="m-trc">--</span>
+              <span class="unit">°C</span>
+            </div>
+            <div class="sub-row">
+              <div>RH Belakang: <strong id="m-hrc">--</strong>%</div>
+              <div>ΔT: <strong id="m-delta" class="txt-brand">--</strong>°C</div>
+            </div>
+          </div>
+
+          <!-- Card 3: Status Lingkungan & Aktuator -->
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">Status Aktuator</span>
+              <span id="d-st" class="badge b-off">--</span>
+            </div>
+            
+            <div class="actuator-grid">
+              <div class="act-item" id="act-fan">
+                <span class="act-lbl">Kipas</span>
+                <strong class="badge b-off" id="val-act-fan">OFF</strong>
+              </div>
+              <div class="act-item" id="act-hum">
+                <span class="act-lbl">Humidifier</span>
+                <strong class="badge b-off" id="val-act-hum">OFF</strong>
+              </div>
+              <div class="act-item" id="act-dehum">
+                <span class="act-lbl">Dehumidifier</span>
+                <strong class="badge b-off" id="val-act-dehum">OFF</strong>
+              </div>
+            </div>
+
+            <div class="sub-row">
+              <div>Status RH: <strong id="rh-status-text">Optimal</strong></div>
+              <div>Max Suhu: <strong id="m-tmax">--</strong>°C</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visualisasi Denah Top-Down Rak -->
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">Visualisasi Rak & Sirkulasi Lingkungan</span>
+          </div>
+
+          <div class="flow-layout">
+            <!-- Zona Depan (Intake) -->
+            <div class="flow-zone">
+              <div class="zone-tag tag-cold">DEPAN (INTAKE)</div>
+              
+              <div class="sensor-box" id="node-fl">
+                <div class="sensor-label">Depan Kiri (FL)</div>
+                <div class="sensor-temp"><span id="v-tfl">--</span>°C</div>
+                <div class="sensor-sub">RH <span id="v-hfl">--</span>%</div>
+              </div>
+
+              <div class="sensor-box" id="node-fr">
+                <div class="sensor-label">Depan Kanan (FR)</div>
+                <div class="sensor-temp"><span id="v-tfr">--</span>°C</div>
+                <div class="sensor-sub">RH <span id="v-hfr">--</span>%</div>
+              </div>
+
+              <!-- Humidifier Pod di Intake -->
+              <div class="sub-act-box" id="v-box-hum">
+                <span class="sub-act-lbl">HUMIDIFIER (MIST)</span>
+                <strong id="v-txt-hum" class="badge b-off">OFF</strong>
+              </div>
+            </div>
+
+            <!-- Panah Airflow -->
+            <div class="flow-arrow">
+              <span>→</span>
+              <small>AIRFLOW</small>
+            </div>
+
+            <!-- Rak Server (Tengah) -->
+            <div class="flow-rack">
+              <div class="rack-head-bar">
+                <span class="rack-title">SERVER RACK (42U)</span>
+                <span class="rack-status-pill">4 UNIT AKTIF</span>
+              </div>
+              <div class="rack-units">
+                <div class="server-unit">
+                  <div class="unit-left">
+                    <span class="unit-led"></span>
+                    <span class="unit-name">Node 1: Compute Server</span>
+                  </div>
+                  <div class="unit-vents">
+                    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                  </div>
+                  <span class="unit-tag">LOAD</span>
+                </div>
+                <div class="server-unit">
+                  <div class="unit-left">
+                    <span class="unit-led"></span>
+                    <span class="unit-name">Node 2: Database Server</span>
+                  </div>
+                  <div class="unit-vents">
+                    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                  </div>
+                  <span class="unit-tag">LOAD</span>
+                </div>
+                <div class="server-unit">
+                  <div class="unit-left">
+                    <span class="unit-led"></span>
+                    <span class="unit-name">Node 3: Storage SAN</span>
+                  </div>
+                  <div class="unit-vents">
+                    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                  </div>
+                  <span class="unit-tag">LOAD</span>
+                </div>
+                <div class="server-unit">
+                  <div class="unit-left">
+                    <span class="unit-led"></span>
+                    <span class="unit-name">Node 4: Core Switch</span>
+                  </div>
+                  <div class="unit-vents">
+                    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                  </div>
+                  <span class="unit-tag">LOAD</span>
+                </div>
+              </div>
+              <div class="rack-delta">
+                <div class="delta-label-group">
+                  <span>ΔT (Kenaikan Panas)</span>
+                  <small>Exhaust - Intake</small>
+                </div>
+                <strong id="v-delta-val">-- °C</strong>
+              </div>
+            </div>
+
+            <!-- Panah Airflow -->
+            <div class="flow-arrow">
+              <span>→</span>
+              <small>EXHAUST</small>
+            </div>
+
+            <!-- Zona Belakang (Exhaust) -->
+            <div class="flow-zone">
+              <div class="zone-tag tag-hot">BELAKANG (EXHAUST)</div>
+              
+              <div class="sensor-box" id="node-rc">
+                <div class="sensor-label">Belakang Tengah (RC)</div>
+                <div class="sensor-temp"><span id="v-trc">--</span>°C</div>
+                <div class="sensor-sub">RH <span id="v-hrc">--</span>%</div>
+              </div>
+
+              <!-- Kipas Buang -->
+              <div class="sub-act-box" id="v-box-fan">
+                <span class="sub-act-lbl">KIPAS EKSTRAKSI</span>
+                <strong id="v-txt-fan" class="badge b-off">OFF</strong>
+              </div>
+
+              <!-- Dehumidifier di Exhaust -->
+              <div class="sub-act-box" id="v-box-dehum">
+                <span class="sub-act-lbl">DEHUMIDIFIER</span>
+                <strong id="v-txt-dehum" class="badge b-off">OFF</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: RIWAYAT -->
+      <section id="hist" class="page">
+        <div class="card">
+          <div class="chart-header">
+            <span class="card-title">Grafik Suhu & Kelembapan</span>
+            <div class="chart-actions">
+              <select id="rng">
+                <option value="1">1 jam</option>
+                <option value="6">6 jam</option>
+                <option value="24" selected>24 jam</option>
+              </select>
+              <a id="csv" class="btn" href="#">Unduh CSV</a>
+            </div>
+          </div>
+
+          <div class="chart-box">
+            <svg id="chart" class="chart" viewBox="0 0 800 240" preserveAspectRatio="none"></svg>
+          </div>
+
+          <div class="chart-legend">
+            <span><i class="c-fl"></i> FL (Kiri)</span>
+            <span><i class="c-fr"></i> FR (Kanan)</span>
+            <span><i class="c-rc"></i> RC (Belakang)</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">Log Peringatan Lingkungan</span>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Waktu</th>
+                <th>Jenis Kejadian</th>
+                <th>Sensor / Titik</th>
+                <th>Nilai Terbaca</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="alert-log">
+              <tr><td colspan="5" class="empty">Belum ada peringatan</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB 3: PENGATURAN -->
+      <section id="set" class="page">
+        <div class="card form-card">
+          <div class="card-head">
+            <span class="card-title">Threshold Suhu & Kelembapan</span>
+          </div>
+          
+          <div class="field">
+            <label for="t-warn">Batas Kipas ON / Suhu Waspada (°C)</label>
+            <input type="number" id="t-warn" step="0.5" value="28">
+          </div>
+
+          <div class="field">
+            <label for="t-bad">Batas Bahaya Suhu (°C)</label>
+            <input type="number" id="t-bad" step="0.5" value="32">
+          </div>
+
+          <div class="field">
+            <label for="t-hum-low">Batas Min Kelembapan / Humidifier ON (% RH)</label>
+            <input type="number" id="t-hum-low" step="1" value="40">
+          </div>
+
+          <div class="field">
+            <label for="t-hum-high">Batas Max Kelembapan / Dehumidifier ON (% RH)</label>
+            <input type="number" id="t-hum-high" step="1" value="70">
+          </div>
+
+          <div class="field-act">
+            <button class="btn btn-primary" onclick="saveThresh()">Simpan</button>
+            <span id="save-msg"></span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

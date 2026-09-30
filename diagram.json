@@ -1,0 +1,128 @@
+{
+  "version": 1,
+  "author": "Ponytail",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-esp32-devkit-v1",
+      "id": "esp",
+      "top": 40,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-dht22",
+      "id": "dht_fl",
+      "top": -160,
+      "left": -120,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-dht22",
+      "id": "dht_fr",
+      "top": -160,
+      "left": 40,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-dht22",
+      "id": "dht_rc",
+      "top": -160,
+      "left": 200,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-lcd1602",
+      "id": "lcd",
+      "top": 80,
+      "left": 220,
+      "attrs": {
+        "pins": "i2c"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led_fan",
+      "top": 80,
+      "left": -140,
+      "attrs": {
+        "color": "red",
+        "label": "KIPAS"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "res_fan",
+      "top": 110,
+      "left": -140,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led_hum",
+      "top": 150,
+      "left": -140,
+      "attrs": {
+        "color": "blue",
+        "label": "HUMIDIFIER"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "res_hum",
+      "top": 180,
+      "left": -140,
+      "attrs": {
+        "value": "220"
+      }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led_dehum",
+      "top": 220,
+      "left": -140,
+      "attrs": {
+        "color": "yellow",
+        "label": "DEHUMIDIFIER"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "res_dehum",
+      "top": 250,
+      "left": -140,
+      "attrs": {
+        "value": "220"
+      }
+    }
+  ],
+  "connections": [
+    [ "esp:TX0", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX0", "$serialMonitor:TX", "", [] ],
+    [ "dht_fl:VCC", "esp:3V3", "red", [] ],
+    [ "dht_fl:GND", "esp:GND.1", "black", [] ],
+    [ "dht_fl:SDA", "esp:D4", "blue", [] ],
+    [ "dht_fr:VCC", "esp:3V3", "red", [] ],
+    [ "dht_fr:GND", "esp:GND.1", "black", [] ],
+    [ "dht_fr:SDA", "esp:D18", "blue", [] ],
+    [ "dht_rc:VCC", "esp:3V3", "red", [] ],
+    [ "dht_rc:GND", "esp:GND.1", "black", [] ],
+    [ "dht_rc:SDA", "esp:D19", "blue", [] ],
+    [ "lcd:VCC", "esp:3V3", "red", [] ],
+    [ "lcd:GND", "esp:GND.2", "black", [] ],
+    [ "lcd:SDA", "esp:D21", "blue", [] ],
+    [ "lcd:SCL", "esp:D22", "yellow", [] ],
+    [ "esp:25", "led_fan:A", "green", [] ],
+    [ "led_fan:C", "res_fan:1", "black", [] ],
+    [ "res_fan:2", "esp:GND.1", "black", [] ],
+    [ "esp:26", "led_hum:A", "blue", [] ],
+    [ "led_hum:C", "res_hum:1", "black", [] ],
+    [ "res_hum:2", "esp:GND.1", "black", [] ],
+    [ "esp:27", "led_dehum:A", "orange", [] ],
+    [ "led_dehum:C", "res_dehum:1", "black", [] ],
+    [ "res_dehum:2", "esp:GND.1", "black", [] ]
+  ],
+  "dependencies": {}
+}

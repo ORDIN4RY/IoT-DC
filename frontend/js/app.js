@@ -16,6 +16,39 @@ const $ = id => document.getElementById(id);
 const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
 // =====================================================
+// THEME TOGGLE (light / dark / auto)
+// =====================================================
+function applyTheme(theme) {
+  const root = document.documentElement;
+  const btn = $('theme-btn');
+  if (theme === 'dark') {
+    root.setAttribute('data-theme', 'dark');
+    btn.textContent = '☾ Dark';
+  } else if (theme === 'light') {
+    root.setAttribute('data-theme', 'light');
+    btn.textContent = '☀ Light';
+  } else {
+    root.removeAttribute('data-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    btn.textContent = prefersDark ? '☾ Auto' : '☀ Auto';
+  }
+}
+
+window.toggleTheme = function() {
+  const current = localStorage.getItem('theme');
+  let next;
+  if (current === 'light') next = 'dark';
+  else if (current === 'dark') next = 'auto';
+  else next = 'light';
+  localStorage.setItem('theme', next);
+  applyTheme(next === 'auto' ? null : next);
+};
+
+// Apply saved theme on load
+const savedTheme = localStorage.getItem('theme');
+applyTheme(savedTheme === 'light' ? 'light' : savedTheme === 'dark' ? 'dark' : null);
+
+// =====================================================
 // NAVIGATION TABS
 // =====================================================
 const navLinks = $('nav').querySelectorAll('a');

@@ -1,32 +1,78 @@
 :root {
-  --bg: #0f172a;
-  --panel: #1e293b;
-  --panel-alt: #243248;
-  --ink: #f8fafc;
-  --mute: #94a3b8;
-  --line: #334155;
-  --line-alt: #475569;
-  --brand: #38bdf8;
-  --ok: #10b981;
-  --warn: #f59e0b;
-  --bad: #ef4444;
-  --cold: #38bdf8;
-  --hot: #f87171;
+  --bg: #eaeaea;
+  --panel: #f5f5f5;
+  --panel-alt: #efefef;
+  --ink: #1a1a1a;
+  --mute: #555555;
+  --line: #222222;
+  --line-thin: #c0c0c0;
+  --brand: #2563eb;
+  --ok: #16a34a;
+  --warn: #ca8a04;
+  --bad: #dc2626;
+  --cold: #2563eb;
+  --hot: #dc2626;
+
+  --badge-ok-bg: #dcfce7;
+  --badge-warn-bg: #fef9c3;
+  --badge-bad-bg: #fee2e2;
+  --badge-cold-bg: #dbeafe;
+  --badge-hot-bg: #fee2e2;
+  --badge-off-bg: #e0e0e0;
+  --badge-off-fg: #737373;
+  --badge-off-border: #a3a3a3;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    --bg: #f8fafc;
-    --panel: #ffffff;
-    --panel-alt: #f1f5f9;
-    --ink: #0f172a;
-    --mute: #64748b;
-    --line: #e2e8f0;
-    --line-alt: #cbd5e1;
-    --brand: #0284c7;
-    --cold: #0284c7;
-    --hot: #dc2626;
+/* Dark mode — auto detect */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #181818;
+    --panel: #222222;
+    --panel-alt: #2a2a2a;
+    --ink: #e5e5e5;
+    --mute: #999999;
+    --line: #d4d4d4;
+    --line-thin: #404040;
+    --brand: #60a5fa;
+    --ok: #4ade80;
+    --warn: #facc15;
+    --bad: #f87171;
+    --cold: #60a5fa;
+    --hot: #f87171;
+    --badge-ok-bg: #14532d;
+    --badge-warn-bg: #422006;
+    --badge-bad-bg: #450a0a;
+    --badge-cold-bg: #1e3a5f;
+    --badge-hot-bg: #450a0a;
+    --badge-off-bg: #333333;
+    --badge-off-fg: #999999;
+    --badge-off-border: #666666;
   }
+}
+
+/* Dark mode — manual toggle */
+:root[data-theme="dark"] {
+  --bg: #181818;
+  --panel: #222222;
+  --panel-alt: #2a2a2a;
+  --ink: #e5e5e5;
+  --mute: #999999;
+  --line: #d4d4d4;
+  --line-thin: #404040;
+  --brand: #60a5fa;
+  --ok: #4ade80;
+  --warn: #facc15;
+  --bad: #f87171;
+  --cold: #60a5fa;
+  --hot: #f87171;
+  --badge-ok-bg: #14532d;
+  --badge-warn-bg: #422006;
+  --badge-bad-bg: #450a0a;
+  --badge-cold-bg: #1e3a5f;
+  --badge-hot-bg: #450a0a;
+  --badge-off-bg: #333333;
+  --badge-off-fg: #999999;
+  --badge-off-border: #666666;
 }
 
 * { box-sizing: border-box; }
@@ -34,20 +80,22 @@
 body {
   margin: 0;
   display: flex;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
   font-size: 14px;
-  line-height: 1.4;
+  line-height: 1.5;
   background: var(--bg);
   color: var(--ink);
   height: 100vh;
   overflow: hidden;
 }
 
-/* SIDEBAR */
+/* ================================
+   SIDEBAR
+   ================================ */
 aside {
   width: 180px;
   background: var(--panel);
-  border-right: 1px solid var(--line);
+  border-right: 3px solid var(--line);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -55,7 +103,7 @@ aside {
 
 .brand {
   padding: 18px 16px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 2px solid var(--line);
 }
 
 .brand-title {
@@ -68,6 +116,7 @@ aside {
   font-size: 0.75rem;
   color: var(--mute);
   margin-top: 2px;
+  font-family: "Consolas", "Courier New", monospace;
 }
 
 nav {
@@ -80,22 +129,24 @@ nav a {
   padding: 10px 16px;
   color: var(--mute);
   text-decoration: none;
-  font-weight: 500;
-  border-left: 3px solid transparent;
+  font-weight: 600;
+  border-left: 4px solid transparent;
 }
 
 nav a:hover {
   color: var(--ink);
-  background: var(--panel-alt);
+  background: var(--bg);
 }
 
 nav a.active {
   color: var(--brand);
-  background: var(--panel-alt);
+  background: var(--bg);
   border-left-color: var(--brand);
 }
 
-/* MAIN */
+/* ================================
+   MAIN AREA
+   ================================ */
 main {
   flex: 1;
   overflow-y: auto;
@@ -117,7 +168,7 @@ header {
 h1 {
   margin: 0;
   font-size: 1.35rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .timestamp {
@@ -126,11 +177,13 @@ h1 {
   margin-top: 2px;
 }
 
-/* CARDS */
+/* ================================
+   CARDS — flat, thick border
+   ================================ */
 .card {
   background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 6px;
+  border: 2px solid var(--line);
+  border-radius: 0;
   padding: 16px;
   margin-bottom: 16px;
   display: flex;
@@ -146,10 +199,10 @@ h1 {
 
 .card-title {
   font-size: 0.82rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--mute);
+  color: var(--ink);
 }
 
 .grid {
@@ -173,6 +226,7 @@ h1 {
   font-size: 2.2rem;
   font-weight: 700;
   line-height: 1;
+  font-family: "Consolas", "Courier New", monospace;
   font-variant-numeric: tabular-nums;
 }
 
@@ -199,7 +253,7 @@ h1 {
   justify-content: space-between;
   align-items: center;
   padding-top: 10px;
-  border-top: 1px solid var(--line);
+  border-top: 2px solid var(--line);
   font-size: 0.8rem;
   color: var(--mute);
 }
@@ -212,6 +266,9 @@ h1 {
   color: var(--brand) !important;
 }
 
+/* ================================
+   ACTUATOR GRID
+   ================================ */
 .actuator-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -223,8 +280,8 @@ h1 {
 
 .act-item {
   background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 4px;
+  border: 2px solid var(--line);
+  border-radius: 0;
   padding: 6px 4px;
   display: flex;
   flex-direction: column;
@@ -236,15 +293,15 @@ h1 {
 .act-lbl {
   font-size: 0.65rem;
   color: var(--mute);
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   white-space: nowrap;
 }
 
 .sub-act-box {
   background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 4px;
+  border: 2px solid var(--line);
+  border-radius: 0;
   padding: 6px 8px;
   display: flex;
   justify-content: space-between;
@@ -254,36 +311,41 @@ h1 {
 .sub-act-lbl {
   font-size: 0.68rem;
   color: var(--mute);
-  font-weight: 600;
+  font-weight: 700;
 }
 
-/* BADGES (Flat, No Glow) */
+/* ================================
+   BADGES — solid flat colors, thick border
+   ================================ */
 .badge {
   display: inline-block;
   padding: 2px 7px;
-  border-radius: 4px;
+  border-radius: 0;
   font-size: 0.72rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  border: 1px solid transparent;
+  border: 2px solid transparent;
+  font-family: "Consolas", "Courier New", monospace;
 }
 
-.b-ok    { background: rgba(16, 185, 129, 0.15); color: var(--ok); border-color: rgba(16, 185, 129, 0.3); }
-.b-warn  { background: rgba(245, 158, 11, 0.15); color: var(--warn); border-color: rgba(245, 158, 11, 0.3); }
-.b-bad   { background: rgba(239, 68, 68, 0.15); color: var(--bad); border-color: rgba(239, 68, 68, 0.3); }
-.b-cold  { background: rgba(56, 189, 248, 0.15); color: var(--cold); border-color: rgba(56, 189, 248, 0.3); }
-.b-hot   { background: rgba(248, 113, 113, 0.15); color: var(--hot); border-color: rgba(248, 113, 113, 0.3); }
-.b-off   { background: rgba(148, 163, 184, 0.12); color: var(--mute); border-color: rgba(148, 163, 184, 0.25); }
+.b-ok   { background: var(--badge-ok-bg);   color: var(--ok);   border-color: var(--ok); }
+.b-warn { background: var(--badge-warn-bg);  color: var(--warn);  border-color: var(--warn); }
+.b-bad  { background: var(--badge-bad-bg);   color: var(--bad);   border-color: var(--bad); }
+.b-cold { background: var(--badge-cold-bg);  color: var(--cold);  border-color: var(--cold); }
+.b-hot  { background: var(--badge-hot-bg);   color: var(--hot);   border-color: var(--hot); }
+.b-off  { background: var(--badge-off-bg);   color: var(--badge-off-fg); border-color: var(--badge-off-border); }
 
-/* FLOW LAYOUT (TOP-DOWN MINIMALIST) */
+/* ================================
+   FLOW LAYOUT (rack visualization)
+   ================================ */
 .flow-layout {
   display: grid;
   grid-template-columns: 200px 36px 1fr 36px 200px;
   gap: 10px;
   align-items: center;
   background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 6px;
+  border: 2px solid var(--line);
+  border-radius: 0;
   padding: 14px;
 }
 
@@ -298,28 +360,28 @@ h1 {
   font-weight: 700;
   letter-spacing: 0.05em;
   padding: 3px 6px;
-  border-radius: 3px;
+  border-radius: 0;
   text-align: center;
-  border: 1px solid var(--line);
+  border: 2px solid;
 }
 
-.tag-cold { color: var(--cold); background: var(--panel); }
-.tag-hot  { color: var(--hot); background: var(--panel); }
+.tag-cold { color: var(--cold); background: var(--badge-cold-bg); border-color: var(--cold); }
+.tag-hot  { color: var(--hot);  background: var(--badge-hot-bg);  border-color: var(--hot); }
 
 .sensor-box {
   background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 5px;
+  border: 2px solid var(--line);
+  border-radius: 0;
   padding: 8px 10px;
 }
 
-.sensor-box.warn { border-color: var(--warn); }
-.sensor-box.bad  { border-color: var(--bad); }
+.sensor-box.warn { border-color: var(--warn); border-width: 3px; }
+.sensor-box.bad  { border-color: var(--bad);  border-width: 3px; }
 
 .sensor-label {
   font-size: 0.72rem;
   color: var(--mute);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .sensor-temp {
@@ -327,6 +389,7 @@ h1 {
   font-weight: 700;
   line-height: 1.1;
   margin: 2px 0;
+  font-family: "Consolas", "Courier New", monospace;
   font-variant-numeric: tabular-nums;
 }
 
@@ -346,7 +409,7 @@ h1 {
 .flow-arrow span {
   font-size: 1.2rem;
   line-height: 1;
-  color: var(--brand);
+  color: var(--ink);
 }
 
 .flow-arrow small {
@@ -358,8 +421,8 @@ h1 {
 
 .flow-rack {
   background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 6px;
+  border: 2px solid var(--line);
+  border-radius: 0;
   padding: 12px;
   display: flex;
   flex-direction: column;
@@ -370,7 +433,7 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 2px solid var(--line);
   padding-bottom: 6px;
 }
 
@@ -378,17 +441,17 @@ h1 {
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.05em;
-  color: var(--mute);
+  color: var(--ink);
 }
 
 .rack-status-pill {
   font-size: 0.65rem;
   font-weight: 700;
   color: var(--ok);
-  background: rgba(16, 185, 129, 0.12);
+  background: var(--badge-ok-bg);
   padding: 1px 6px;
-  border-radius: 3px;
-  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 0;
+  border: 2px solid var(--ok);
 }
 
 .rack-units {
@@ -399,8 +462,8 @@ h1 {
 
 .server-unit {
   background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 4px;
+  border: 2px solid var(--line);
+  border-radius: 0;
   padding: 6px 10px;
   display: flex;
   align-items: center;
@@ -416,10 +479,11 @@ h1 {
 }
 
 .unit-led {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 0;
   background: var(--ok);
+  border: 1px solid var(--ink);
   flex-shrink: 0;
 }
 
@@ -435,25 +499,25 @@ h1 {
   gap: 3px;
   flex: 1;
   justify-content: center;
-  opacity: 0.4;
+  opacity: 0.35;
 }
 
 .unit-vents i {
   display: inline-block;
   width: 2px;
   height: 12px;
-  background: var(--mute);
-  border-radius: 1px;
+  background: var(--ink);
+  border-radius: 0;
 }
 
 .unit-tag {
   font-size: 0.62rem;
   font-weight: 700;
   color: var(--brand);
-  background: rgba(56, 189, 248, 0.1);
+  background: var(--badge-cold-bg);
   padding: 1px 5px;
-  border-radius: 3px;
-  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 0;
+  border: 2px solid var(--brand);
 }
 
 .rack-delta {
@@ -461,7 +525,7 @@ h1 {
   justify-content: space-between;
   align-items: center;
   padding-top: 8px;
-  border-top: 1px solid var(--line);
+  border-top: 2px solid var(--line);
 }
 
 .delta-label-group {
@@ -471,7 +535,7 @@ h1 {
 
 .delta-label-group span {
   font-size: 0.76rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--ink);
 }
 
@@ -484,12 +548,13 @@ h1 {
   font-size: 1.05rem;
   font-weight: 700;
   color: var(--brand);
+  font-family: "Consolas", "Courier New", monospace;
 }
 
 .fan-box {
   background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 5px;
+  border: 2px solid var(--line);
+  border-radius: 0;
   padding: 8px 10px;
   display: flex;
   align-items: center;
@@ -499,8 +564,8 @@ h1 {
 .fan-icon {
   width: 32px;
   height: 32px;
-  border: 1px solid var(--line);
-  border-radius: 4px;
+  border: 2px solid var(--line);
+  border-radius: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -528,7 +593,9 @@ h1 {
   font-size: 0.9rem;
 }
 
-/* CHART & TABLE */
+/* ================================
+   CHART & TABLE
+   ================================ */
 .chart-header {
   display: flex;
   justify-content: space-between;
@@ -543,8 +610,8 @@ h1 {
 
 .chart-box {
   background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 5px;
+  border: 2px solid var(--line);
+  border-radius: 0;
   padding: 10px;
   margin-bottom: 10px;
 }
@@ -573,7 +640,7 @@ svg.chart {
   display: inline-block;
   width: 10px;
   height: 3px;
-  border-radius: 1px;
+  border-radius: 0;
 }
 
 .c-fl { background: var(--cold); }
@@ -589,14 +656,15 @@ svg.chart {
 .table th, .table td {
   padding: 8px 12px;
   text-align: left;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--line-thin);
 }
 
 .table th {
-  color: var(--mute);
-  font-weight: 600;
+  color: var(--ink);
+  font-weight: 700;
   font-size: 0.75rem;
   text-transform: uppercase;
+  border-bottom: 2px solid var(--line);
 }
 
 .empty {
@@ -605,12 +673,14 @@ svg.chart {
   padding: 18px !important;
 }
 
-/* CONTROLS */
+/* ================================
+   FORM CONTROLS — thick border, no radius
+   ================================ */
 button, select, a.btn, input {
   font: inherit;
   padding: 6px 12px;
-  border: 1px solid var(--line);
-  border-radius: 5px;
+  border: 2px solid var(--line);
+  border-radius: 0;
   background: var(--panel);
   color: var(--ink);
   font-size: 0.82rem;
@@ -623,9 +693,13 @@ button, a.btn, select {
 
 .btn-primary {
   background: var(--brand);
-  color: #0f172a;
+  color: #ffffff;
   border-color: var(--brand);
-  font-weight: 600;
+  font-weight: 700;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
 }
 
 .form-card { max-width: 440px; }
@@ -637,7 +711,7 @@ button, a.btn, select {
 .field label {
   display: block;
   font-size: 0.82rem;
-  font-weight: 500;
+  font-weight: 600;
   margin-bottom: 4px;
 }
 
@@ -655,12 +729,18 @@ button, a.btn, select {
 #save-msg {
   font-size: 0.8rem;
   color: var(--ok);
+  font-weight: 600;
 }
 
-/* PAGES */
+/* ================================
+   PAGE TAB VISIBILITY
+   ================================ */
 .page { display: none; }
 .page.active { display: block; }
 
+/* ================================
+   RESPONSIVE
+   ================================ */
 @media (max-width: 800px) {
   .flow-layout {
     grid-template-columns: 1fr;
@@ -671,8 +751,34 @@ button, a.btn, select {
 
 @media (max-width: 640px) {
   body { flex-direction: column; overflow: auto; }
-  aside { width: 100%; border-right: none; border-bottom: 1px solid var(--line); }
+  aside { width: 100%; border-right: none; border-bottom: 3px solid var(--line); }
   nav { flex-direction: row; }
-  nav a { border-left: none; border-bottom: 2px solid transparent; }
+  nav a { border-left: none; border-bottom: 3px solid transparent; }
   nav a.active { border-bottom-color: var(--brand); }
+}
+
+/* ================================
+   THEME TOGGLE BUTTON
+   ================================ */
+.theme-toggle {
+  margin-top: auto;
+  padding: 12px 16px;
+  border-top: 2px solid var(--line);
+}
+
+.theme-toggle button {
+  width: 100%;
+  padding: 6px 10px;
+  background: var(--bg);
+  border: 2px solid var(--line);
+  color: var(--ink);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.theme-toggle button:hover {
+  background: var(--panel-alt);
 }
